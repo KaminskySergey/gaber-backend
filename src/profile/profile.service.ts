@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma.service";
 import { ProfileDto } from "./dto/profile-dto";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class ProfileService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getProfile() {
+  async getProfile(selectObject: Prisma.ProfileSelect = {}) {
     const profile = await this.prisma.profile.findFirst({
       select: {
         id: true,
@@ -18,7 +19,10 @@ export class ProfileService {
         description: true,
         email: true,
         reviews: true,
+        userId: true,
         achievements: true,
+        medias: true,
+        ...selectObject,
       },
     });
     return profile;
@@ -50,5 +54,18 @@ export class ProfileService {
         email: dto.email,
       },
     });
+  }
+
+  async getProfileIdByUserId(userId: string) {
+    return this.prisma.profile.findUnique({
+      where: { userId },
+    });
+  }
+
+  async searchProfile() {
+    const profile = await this.prisma.profile.findMany({
+      take: 1,
+    });
+    return profile.length > 0 ? profile[0] : null;
   }
 }

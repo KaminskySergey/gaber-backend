@@ -1,3 +1,5 @@
+import { Auth } from "src/auth/decorators/auth.decorator";
+import { MediaService } from "./media.service";
 import {
   Controller,
   Post,
@@ -10,40 +12,37 @@ import {
   HttpCode,
   Get,
 } from "@nestjs/common";
-import { Auth } from "src/auth/decorators/auth.decorator";
-import { ReviewService } from "./review.service";
-import { ReviewDto } from "./dto/review-dto";
+import { MediaDto } from "./dto/media-dto";
 import { ProfileService } from "src/profile/profile.service";
 
-@Controller("reviews")
-export class ReviewController {
+@Controller("medias")
+export class MediaController {
   constructor(
-    private readonly reviewService: ReviewService,
+    private readonly mediaService: MediaService,
     private readonly profileService: ProfileService,
   ) {}
 
-  @Get("")
   @HttpCode(200)
+  @Get("")
   async getAll() {
-    return await this.reviewService.getAllReviews();
+    return await this.mediaService.getAllMedia();
   }
 
   @Post("")
   @UsePipes(new ValidationPipe())
   @Auth("admin")
   @HttpCode(200)
-  async create(@Body() dto: ReviewDto) {
+  async create(@Body() dto: MediaDto) {
     const { id: profileId } = await this.profileService.searchProfile();
-    console.log(profileId);
-    return await this.reviewService.createReview(dto, profileId);
+    return await this.mediaService.createMedia(dto, profileId);
   }
 
   @Put(":id")
   @UsePipes(new ValidationPipe())
   @Auth("admin")
   @HttpCode(200)
-  async update(@Param("id") id: string, @Body() dto: ReviewDto) {
-    return await this.reviewService.updateReview(id, dto);
+  async update(@Param("id") id: string, @Body() dto: MediaDto) {
+    return await this.mediaService.updateMedia(id, dto);
   }
 
   @Delete(":id")
@@ -51,6 +50,6 @@ export class ReviewController {
   @Auth("admin")
   @HttpCode(200)
   async delete(@Param("id") id: string) {
-    return await this.reviewService.deleteReview(id);
+    return await this.mediaService.deleteMedia(id);
   }
 }

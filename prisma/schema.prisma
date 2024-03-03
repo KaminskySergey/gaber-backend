@@ -21,6 +21,8 @@ model User {
   email      String   @unique
   password   String
   isAdmin    Boolean  @default(false) @map("is_admin")
+
+  profile Profile? 
   
 }
 
@@ -39,10 +41,14 @@ model Profile {
   email String @default("")
   description String
 
+  user User? @relation(fields: [userId], references: [id])
+  userId String? @unique @map("user_id")
   
-  
+
+
   achievements Achievement[]
   reviews Review[]
+  medias Media[]
 }
 
 model Achievement {
@@ -69,6 +75,19 @@ model Review {
   description String
   rating String
   photo String
+
+  profile Profile? @relation(fields: [profileId], references: [id])
+  profileId String? @map("profile_id")
+}
+
+model Media {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String
+  link String
+  icon String
 
   profile Profile? @relation(fields: [profileId], references: [id])
   profileId String? @map("profile_id")

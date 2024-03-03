@@ -33,14 +33,16 @@ export class ReviewService {
     });
   }
 
-  async createReview() {
+  async createReview(dto: ReviewDto, profileId: string) {
+    const { name, birthDate, description, rating, photo } = dto;
     return await this.prisma.review.create({
       data: {
-        name: "",
-        birthDate: "",
-        description: "",
-        rating: "",
-        photo: "",
+        name: name || "",
+        birthDate: birthDate || "",
+        description: description || "",
+        rating: rating || "",
+        photo: photo || "",
+        profileId,
       },
     });
   }

@@ -13,10 +13,14 @@ import {
 import { AchievementService } from "./achievement.service";
 import { Auth } from "src/auth/decorators/auth.decorator";
 import { AchievementDto } from "./dto/achievement-dto";
+import { ProfileService } from "src/profile/profile.service";
 
 @Controller("achievements")
 export class AchievementController {
-  constructor(private readonly achievementService: AchievementService) {}
+  constructor(
+    private readonly achievementService: AchievementService,
+    private readonly profileService: ProfileService,
+  ) {}
 
   @Get("")
   @HttpCode(200)
@@ -28,8 +32,9 @@ export class AchievementController {
   @UsePipes(new ValidationPipe())
   @Auth("admin")
   @HttpCode(200)
-  async create() {
-    return await this.achievementService.createAchievement();
+  async create(@Body() dto: AchievementDto) {
+    const { id: profileId } = await this.profileService.searchProfile();
+    return await this.achievementService.createAchievement(dto, profileId);
   }
 
   @Put(":id")

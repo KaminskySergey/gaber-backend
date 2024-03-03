@@ -11,7 +11,6 @@ export class OnlyAdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<{ user: User }>();
     const user = request.user;
-    console.log(user);
     if (!user.isAdmin) throw new ForbiddenException("You don`t have admin");
 
     return user.isAdmin;

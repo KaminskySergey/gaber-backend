@@ -20,13 +20,15 @@ export class AchievementService {
     });
   }
 
-  async createAchievement() {
+  async createAchievement(dto: AchievementDto, profileId: string) {
+    const { name, date, photo, description } = dto;
     return await this.prisma.achievement.create({
       data: {
-        name: "",
-        date: "",
-        photo: "",
-        description: "",
+        name: name || "",
+        date: date || "",
+        photo: photo || "",
+        description: description || "",
+        profileId,
       },
     });
   }
